@@ -107,3 +107,4 @@ dist
 .DS_Store
 files/
 back/fonts/
+back/config/*.local.js
