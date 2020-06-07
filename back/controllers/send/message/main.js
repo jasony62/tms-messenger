@@ -26,7 +26,7 @@ class Message extends BaseCtrl {
 
     const { receivers, cover, body } = this.request.body
 
-    if (!receivers || !Array.isArray(receivers) || receivers.length === 0) return new ResultFault('没有指定消息接收人')
+    if (!Array.isArray(receivers) || receivers.length === 0) return new ResultFault('没有指定消息接收人')
 
     /* 检查消息封面参数是否可用 */
     let coverData
@@ -76,9 +76,10 @@ class Message extends BaseCtrl {
       messages.push(msg)
     })
 
-    const count = await this.msgModel.clMessage.insertMany(messages).then((result) => result.insertedCount)
+    const newMessages = await this.msgModel.clMessage.insertMany(messages).then((result) => result.ops)
+    const result = newMessages.map(({ code, receiver }) => ({ code, receiver }))
 
-    return new ResultData(count)
+    return new ResultData(result)
   }
   /**
    * 修改发送消息

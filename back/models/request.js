@@ -26,7 +26,7 @@ class RequestModel extends Base {
   async newRequest(message) {
     const { receiver, task, cover } = message
 
-    if (!receiver || typeof receiver !== 'string') throw Error('没有指定消息的接收人，无法发送')
+    if (typeof receiver !== 'string') throw Error('没有指定消息的接收人，无法发送')
 
     if (!task || typeof task !== 'object') throw Error('没有指定消息所属任务，无法发送')
 

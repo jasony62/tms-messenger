@@ -5,6 +5,7 @@ const QUEUE_REDIS = process.env.TMS_MESSENGER_MESSAGE_REQUEST_QUEUE_REDIS
 const QUEUE_NAME = process.env.TMS_MESSENGER_MESSAGE_REQUEST_QUEUE_NAME
 const { MongoContext, RedisContext } = require('tms-koa/lib/app').Context
 
+const MessageModel = requireModel('message')
 const RequestModel = requireModel('request')
 const ChannelModel = requireModel('channel')
 const CoverTplModel = requireModel('template/cover')
@@ -19,6 +20,10 @@ async function sendByWx(request) {
 
   const { WXProxy } = require('tms-wxproxy')
 
+  const msgModel = new MessageModel({ mongoClient })
+  const message = await msgModel.byCode(request.messageCode)
+  if (!message || message.removeAt) throw Error('消息任务不存在或不可用')
+
   const tplModel = new CoverTplModel({ mongoClient })
   const tpl = await tplModel.byCode(request.templateCode)
   if (!tpl || tpl.removeAt) throw Error('消息封面模板不存在或不可用')
@@ -32,9 +37,18 @@ async function sendByWx(request) {
   const wxproxy = new WXProxy(config, mongoClient)
   const wxTplMsg = { touser: request.receiver, data: request.data, template_id: tpl.wxTemplateId }
   if (request.url) wxTplMsg.url = request.url
-  const msgid = await wxproxy.messageTemplateSend(wxTplMsg, { code: request.code })
 
-  return msgid
+  try {
+    const msgid = await wxproxy.messageTemplateSend(wxTplMsg, { code: request.code })
+    return msgid
+  } finally {
+    const now = msgModel.now
+    const setFields = {
+      latestPushAt: now,
+    }
+    if (!message.firstPushAt) setFields.firstPushAt = now
+    await msgModel.clMessage.updateOne({ code: message.code }, { $set: setFields, $inc: { sendCount: 1 } })
+  }
 }
 /**
  *

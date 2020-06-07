@@ -167,7 +167,8 @@ class Task extends BaseCtrl {
     return Promise.all(msgCodes.map(({ code }) => msgModel.byCode(code)))
       .then((messages) => Promise.all(messages.map((message) => MsgRequestQueue.push(message))))
       .then((requests) => {
-        return new ResultData(requests.length)
+        const result = requests.map(({ code, receiver }) => ({ code, receiver }))
+        return new ResultData(result)
       })
   }
 }
