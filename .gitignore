@@ -108,3 +108,4 @@ dist
 files/
 fonts/
 back/config/*.local.js
+docker-compose.override.yml
