@@ -32,12 +32,12 @@ services:
     #   - TMS_MESSENGER_MONGODB_DB=tms_messenger
     #   - TMS_MESSENGER_REDIS_HOST=redis
     #   - TMS_MESSENGER_REDIS_PORT=6379
-    #   - TMS_MESSENGER_READ_MESSAGE_URL=http://127.0.0.1:3000/read/message
+    #   - TMS_MESSENGER_READ_MESSAGE_URL=
     #   - TMS_MESSENGER_MESSAGE_REQUEST_QUEUE_REDIS=master
     #   - TMS_MESSENGER_MESSAGE_REQUEST_QUEUE_NAME=tms_messenger_message_request
     #   - TMS_WXPROXY_MONGODB_DB=tms_messenger
     #   - TMS_WXPROXY_MONGODB_CL_CONFIG=channel
     #   - TMS_WXPROXY_MONGODB_CL_TEMPLATE_MESSAGE=request
-    #   - TMS_KOA_JIMP_FONT_PATH=fonts/ms-yahei/ms-yahei-32-black/ms-yahei-3
+    #   - TMS_KOA_JIMP_FONT_PATH=
     #   - TMS_KOA_JIMP_SAVE_FS_DOMAIN=output
     # command: ['./wait-for.sh', 'mongodb:27017', '-t', '300', '--', 'node', 'server']

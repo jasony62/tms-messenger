@@ -47,8 +47,12 @@ class RequestModel extends Base {
     if (message.bucket) newReq.bucket = message.bucket
 
     /* 生成读取消息内容的url */
-    if (task.body && READ_MESSAGE_URL) {
-      newReq.url = `${READ_MESSAGE_URL}?code=${code}`
+    if (task.body) {
+      if (typeof task.body.url === 'string') {
+        newReq.url = task.body.url
+      } else if (READ_MESSAGE_URL) {
+        newReq.url = `${READ_MESSAGE_URL}?code=${code}`
+      }
     }
 
     const createdReq = await this.clRequest.insertOne(newReq).then((result) => result.ops[0])
