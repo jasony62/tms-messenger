@@ -102,7 +102,6 @@ class MsgRequestQueue {
     return new Promise((resolve) => {
       pub.publish(QUEUE_NAME, newReq.code, () => {
         resolve(newReq)
-        pub.quit()
       })
     })
   }
