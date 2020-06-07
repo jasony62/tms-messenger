@@ -15,7 +15,7 @@ const tmsKoa = new TmsKoa()
 
 /* 以根目录为起点引入模型 */
 global.requireModel = function (relativePath) {
-  return require(__dirname + '/model/' + relativePath)
+  return require(__dirname + '/models/' + relativePath)
 }
 
 tmsKoa.startup({

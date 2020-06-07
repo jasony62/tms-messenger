@@ -106,5 +106,5 @@ dist
 # 应用
 .DS_Store
 files/
-back/fonts/
+fonts/
 back/config/*.local.js

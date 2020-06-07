@@ -1,6 +1,6 @@
 module.exports = {
   master: {
-    host: '127.0.0.1',
-    port: 6379,
+    host: process.env.TMS_MESSENGER_REDIS_HOST,
+    port: parseInt(process.env.TMS_MESSENGER_REDIS_PORT),
   },
 }

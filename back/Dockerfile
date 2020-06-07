@@ -14,4 +14,6 @@ COPY . .
 
 RUN cnpm i
 
+RUN chmod +x /home/node/app/wait_for.sh
+
 CMD [ "node", "server" ]

@@ -44,3 +44,5 @@
 | TMS_MESSENGER_READ_MESSAGE_URL            | 是   | 读取推送消息的地址                    |
 | TMS_MESSENGER_MESSAGE_REQUEST_QUEUE_REDIS | 是   | 消息请求发送队列使用的 redis 连接名称 |
 | TMS_MESSENGER_MESSAGE_REQUEST_QUEUE_NAME  | 是   | 消息请求发送队列名称                  |
+| TMS_KOA_JIMP_FONT_PATH                    | 是   | 图片消息模板对应字库路径              |
+| TMS_KOA_JIMP_SAVE_FS_DOMAIN               | 是   | 生成的图片消息的存储位置              |

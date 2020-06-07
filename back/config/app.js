@@ -12,26 +12,8 @@ let appConfig = {
       prefix: 'fs', // 文件下载服务的前缀
     },
   },
-  // 鉴权 jwt
   auth: {
-    jwt: {
-      privateKey: 'tms-messenger-secret',
-      expiresIn: 3600,
-    },
-    captcha: {
-      code: '1234',
-    },
-    //
-    client: {
-      accounts: [
-        // 默认用户组
-        {
-          id: 1,
-          username: 'root',
-          password: 'root',
-        },
-      ],
-    },
+    disabled: true,
   },
 }
 

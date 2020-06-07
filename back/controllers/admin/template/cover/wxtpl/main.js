@@ -164,7 +164,9 @@ class WxtplTemplate extends BaseCtrl {
     const query = { removeAt: { $exists: false } }
     if (this.bucket) query.bucket = this.bucket
 
-    const templates = await this.tplModel.clCoverTemplate.find(query, { projection: { _id: 0 } }).toArray()
+    const templates = await this.tplModel.clCoverTemplate
+      .find(query, { projection: { _id: 0, wxTemplateId: 0, params: 0, content: 0 } })
+      .toArray()
 
     return new ResultData(templates)
   }

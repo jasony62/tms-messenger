@@ -97,7 +97,9 @@ class WxmpCtrl extends BaseCtrl {
     const query = { type: 'wxmp', removeAt: { $exists: false } }
     if (this.bucket) query.bucket = this.bucket
 
-    const channels = awaitthis.model.clChannel.find(query, { projection: { _id: 0 } }).toArray()
+    const channels = await this.model.clChannel
+      .find(query, { projection: { _id: 0, appid: 0, appsecret: 0, accessToken: 0 } })
+      .toArray()
 
     return new ResultData(channels)
   }
