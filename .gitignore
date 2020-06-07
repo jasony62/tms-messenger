@@ -102,3 +102,8 @@ dist
 
 # TernJS port file
 .tern-port
+
+# 应用
+.DS_Store
+files/
+back/fonts/

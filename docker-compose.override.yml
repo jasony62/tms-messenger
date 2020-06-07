@@ -1,0 +1,17 @@
+version: '3.7'
+services:
+  mongodb:
+    volumes:
+      - ./mongodb/data:/data/db
+    ports:
+      - '27017:27017'
+    # logging:
+    # driver: 'none'
+
+  redis:
+    ports:
+      - '6379:6379'
+
+  back:
+    ports:
+      - '3000:3000'
