@@ -138,7 +138,20 @@ class Message extends BaseCtrl {
     const query = { removeAt: { $exists: false } }
     if (this.bucket) query.bucket = this.bucket
 
-    const messages = await this.msgModel.clMessage.find(query, { projection: { _id: 0 } }).toArray()
+    let { taskCode, lookupRequest } = this.request.query
+    if (taskCode) query.taskCode = taskCode
+
+    let messages
+    if (lookupRequest !== 'Y') {
+      messages = await this.msgModel.clMessage.find(query, { projection: { _id: 0 } }).toArray()
+    } else {
+      messages = await this.msgModel.clMessage
+        .aggregate([
+          { $match: query },
+          { $lookup: { from: 'request', localField: 'code', foreignField: 'messageCode', as: 'request' } },
+        ])
+        .toArray()
+    }
 
     return new ResultData(messages)
   }

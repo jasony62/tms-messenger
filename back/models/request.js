@@ -38,6 +38,7 @@ class RequestModel extends Base {
     const createAt = this.now
     const newReq = {
       code,
+      taskCode: task.code,
       messageCode: message.code,
       templateCode: task.cover.templateCode,
       createAt,
