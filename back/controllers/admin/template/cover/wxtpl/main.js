@@ -23,9 +23,9 @@ class WxtplTemplate extends BaseCtrl {
     const chan = await chanModel.byCode(channelCode)
     if (!chan || chan.removeAt) throw new ResultObjectNotFound('消息通道不存在或不可用')
 
-    const { appid, appsecret, accessToken } = chan
-    const wxConfig = { appid, appsecret, accessToken }
-    const wxproxy = new WXProxy(wxConfig, this.mongoClient)
+    const { appid, appsecret, _id } = chan
+    const wxConfig = { appid, appsecret, _id }
+    const wxproxy = new WXProxy(wxConfig, this.mongoClient, TmsMesgLockPromise)
 
     const templates = await wxproxy.templateList()
 

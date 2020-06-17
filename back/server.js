@@ -17,6 +17,9 @@ const tmsKoa = new TmsKoa()
 global.requireModel = function (relativePath) {
   return require(__dirname + '/models/' + relativePath)
 }
+/* 引入模型 */
+const TmsMesgLockPromise = require('tms-wxproxy/lock-promise')
+global.TmsMesgLockPromise = new TmsMesgLockPromise()
 
 tmsKoa.startup({
   afterInit: async function () {
