@@ -32,8 +32,8 @@ async function sendByWx(request) {
   const chan = await chanModel.byCode(tpl.channelCode)
   if (!chan || chan.removeAt) throw Error('消息通道不存在或不可用')
 
-  const { appid, appsecret } = chan
-  const config = { appid, appsecret, _id: chan._id }
+  const { appid, appsecret, _id } = chan
+  const config = { appid, appsecret, _id }
   const wxproxy = new WXProxy(config, mongoClient, TmsMesgLockPromise)
   const wxTplMsg = { touser: request.receiver, data: request.data, template_id: tpl.wxTemplateId }
   if (request.url) wxTplMsg.url = request.url
