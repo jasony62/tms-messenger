@@ -107,5 +107,7 @@ dist
 .DS_Store
 files/
 fonts/
-back/config/*.local.js
+# back/config/*.local.js
+back/node_modules/
+back/.env
 docker-compose.override.yml
