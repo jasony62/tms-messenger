@@ -27,7 +27,7 @@ class WxtplTemplate extends BaseCtrl {
     if (!chan || chan.removeAt) {
       let msg = `消息通道不存在或不可用`
       logger.debug(msg, `channelCode=${channelCode}`)
-      return ResultObjectNotFound(msg)
+      return new ResultObjectNotFound(msg)
     }
 
     const { appid, appsecret, _id } = chan
