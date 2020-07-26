@@ -1,3 +1,6 @@
+const log4js = require('log4js')
+const logger = log4js.getLogger('tms-messenger')
+
 const { ResultData, ResultFault, ResultObjectNotFound } = require('tms-koa')
 
 const BaseCtrl = require('../../../../base')
@@ -21,7 +24,11 @@ class WxtplTemplate extends BaseCtrl {
     const { channelCode } = this.request.query
     const chanModel = new ChannelModel(this)
     const chan = await chanModel.byCode(channelCode)
-    if (!chan || chan.removeAt) throw new ResultObjectNotFound('消息通道不存在或不可用')
+    if (!chan || chan.removeAt) {
+      let msg = `消息通道不存在或不可用`
+      logger.debug(msg, `channelCode=${channelCode}`)
+      return new ResultObjectNotFound(msg)
+    }
 
     const { appid, appsecret, _id } = chan
     const wxConfig = { appid, appsecret, _id }
