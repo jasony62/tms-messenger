@@ -7,7 +7,7 @@ let appConfig = {
       prefix: 'messenger/api', // 接口调用url的前缀
     },
     fsdomain: {
-      prefix: 'messenger/fs', // 文件下载服务的前缀
+      prefix: 'messenger/fs', // 文件下载服务的前缀
     },
   },
   auth: {

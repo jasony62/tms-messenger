@@ -161,7 +161,7 @@ class WxtplTemplate extends BaseCtrl {
    * 模板列表
    */
   async list() {
-    const query = { removeAt: { $exists: false } }
+    let query = { removeAt: { $exists: false } }
     if (this.bucket) query.bucket = this.bucket
 
     const templates = await this.tplModel.clCoverTemplate
