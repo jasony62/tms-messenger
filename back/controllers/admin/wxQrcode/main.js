@@ -44,7 +44,9 @@ class main extends BaseCtrl {
   async create() {
     const { channelCode, name, expire = 86400 } = this.request.query
     let oneOff = this.request.query.oneOff
-    if (!oneOff || oneOff === true || oneOff === "true") oneOff = true
+    if (!oneOff || oneOff === true || oneOff === "true")
+      oneOff = true
+    else oneOff = false
 
     // ----------------------------------
     const { bucket } = this.request.query
