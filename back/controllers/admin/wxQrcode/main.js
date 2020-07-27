@@ -81,7 +81,8 @@ class main extends BaseCtrl {
     data.pic = qrcode.pic
     if (oneOff === true) {
       data.expire = qrcode.expire_seconds
-      data.expire_at = this.qrcodeModel.now.getTime() + (qrcode.expire_seconds * 1000)
+      data.expire_at = new Date().getTime() + (qrcode.expire_seconds * 1000)
+      data.expire_time = new Date(this.qrcodeModel.now.getTime() + (qrcode.expire_seconds * 1000))
       qrcode.expire_at = data.expire_at
     }
     await this.qrcodeModel.clWxQrcode.insertOne(data)
