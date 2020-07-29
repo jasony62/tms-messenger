@@ -2,16 +2,16 @@ version: '3.7'
 services:
   mmongodb:
     build: ./mongodb
-    image: tms-msg/mongo:latest
+    image: 192.168.253.28/tms-msg/mongo:latest
     container_name: msg-mongo
   
   redis:
     build: ./redis
-    image: tms-msg/redis:alpine
+    image: 192.168.253.28/tms-msg/redis:alpine
     container_name: msg-redis
   back:
     build: ./back
-    image: tms-msg/back:latest
+    image: 192.168.253.28/tms-msg/back:latest
     container_name: msg-back
     environment:
        - TMS_APP_PORT=3000
