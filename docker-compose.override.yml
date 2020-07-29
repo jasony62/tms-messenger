@@ -20,8 +20,8 @@ services:
         - '3450:3000'
       environment:
       - TMS_REDIS_PREFIX=dev-op
-      - TMS_REDIS_HOST=192.168.20.247
-      - TMS_REDIS_PORT=6300
+      - TMS_REDIS_HOST=redis
+      - TMS_REDIS_PORT=6379
       networks:
       - portal
 networks:
