@@ -14,7 +14,7 @@ services:
     image: 192.168.253.28/tms-msg/back:latest
     container_name: msg-back
     environment:
-    - TMS_APP_PORT=3000
+       - TMS_APP_PORT=3000
        - TMS_APP_NAME=tms_messenger
        - TMS_MESSENGER_READ_MESSAGE_URL=http://developer.189.cn
        - TMS_APP_LOG4JS_LEVEL=debug
