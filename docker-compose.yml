@@ -7,7 +7,7 @@ services:
   
   redis:
     build: ./redis
-    image: 192.168.253.28/tms-msg/redis:alpine
+    image: 192.168.253.28/tms-msg/redis:latest
     container_name: msg-redis
   back:
     build: ./back
