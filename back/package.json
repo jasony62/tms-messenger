@@ -21,6 +21,6 @@
     "redis": "^3.0.2",
     "tms-koa": "^0.0.49",
     "tms-koa-jimp": "^0.0.4",
-    "tms-wxproxy": "^0.0.7"
+    "tms-wxproxy": "^0.0.8"
   }
 }

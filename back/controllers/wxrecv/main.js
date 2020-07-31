@@ -125,21 +125,31 @@ class Main extends Base {
    * 
    */
   async _eventCall(msg) {
-    let qrcode
-    if (msg.Event === "subscribe") {
-      if (msg.EventKey) {
-        qrcode = msg.EventKey.substring("qrscene_".length)
-      }
-    } else if (["scan", "SCAN"].includes(msg.Event)) {
-      qrcode = msg.EventKey
-    }
-    // 
     let proxyUrl = false
-    const qrcodeModel = new WxQrcodeModel(this)
-    let qrcodeObj = await qrcodeModel.clWxQrcode.findOne({ channelCode: msg.channelCode, scene_id: Number(qrcode) })
-    if (qrcodeObj && qrcodeObj.bucket) { // 根据bucket查找转发地址
-      const bucketObj = await this.getBucketInfo(qrcodeObj.bucket)
-      proxyUrl = bucketObj.proxyUrl
+
+    switch (msg.Event) {
+      case "subscribe":
+      case "scan":
+      case "SCAN":
+        let qrcode
+        if (msg.Event === "subscribe") {
+          if (msg.EventKey) {
+            qrcode = msg.EventKey.substring("qrscene_".length)
+          }
+        } else {
+          qrcode = msg.EventKey
+        }
+        // 
+        if (qrcode) {
+          const qrcodeModel = new WxQrcodeModel(this)
+          let qrcodeObj = await qrcodeModel.clWxQrcode.findOne({ channelCode: msg.channelCode, scene_id: Number(qrcode) })
+          if (qrcodeObj && qrcodeObj.bucket) { // 根据bucket查找转发地址
+            const bucketObj = await this.getBucketInfo(qrcodeObj.bucket)
+            if (bucketObj) proxyUrl = bucketObj.proxyUrl
+          }
+        }
+
+        break
     }
 
     return proxyUrl
