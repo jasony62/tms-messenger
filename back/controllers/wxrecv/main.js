@@ -11,7 +11,7 @@ const crypto = require('crypto')
 class Main extends Base {
   constructor(...args) {
     super(...args)
-    this.model = new ChannelModel(this)
+    this.channModel = new ChannelModel(this)
   }
   /**
    * 接受消息内容
@@ -51,8 +51,7 @@ class Main extends Base {
     }
 
     // 获取chennl配置
-    const chanModel = new ChannelModel(this)
-    const chan = await chanModel.byCode(channelCode)
+    const chan = await this.channModel.byCode(channelCode)
     if (!chan || chan.removeAt) return [false, 'wx proxy failed-0']
 
     let tmpArr = [chan.token, data.timestamp, data.nonce]
@@ -61,7 +60,7 @@ class Main extends Base {
     tmpStr = crypto.createHash('sha1').update(tmpStr).digest('hex')
 
     if (tmpStr === data.signature) {
-      const cl = this.model.clChannel
+      const cl = this.channModel.clChannel
       /**
        * 如果存在，断开公众号原有连接
        */
