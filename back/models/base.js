@@ -44,6 +44,9 @@ class Base {
   get clWxQrcode() {
     return this.db.collection('wx_qrcode')
   }
+  get clWxRcev() {
+    return this.db.collection('wx_rcev')
+  }
 }
 
 module.exports = Base

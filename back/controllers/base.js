@@ -1,4 +1,10 @@
 const { Ctrl, ResultFault, ResultObjectNotFound } = require('tms-koa')
+const { WXProxy } = require('tms-wxproxy')
+
+const axios = require('axios')
+const adapter = require('axios/lib/adapters/http')
+const log4js = require('log4js')
+const logger = log4js.getLogger('tms-messenger-base')
 
 function allowAccessBucket(bucket, clientId) {
   if (bucket.creator === clientId) return true
@@ -39,6 +45,37 @@ class Base extends Ctrl {
       }
       this.bucket = bucket
     }
+  }
+  /**
+   * 获取bucket详细信息
+   * @param {*} bucketName 
+   */
+  async getBucketInfo(bucketName) {
+    const client = this.mongoClient
+    const clBucket = client.db(BUCKET_DB).collection(BUCKET_COLLECTION)
+    const bucket = await clBucket.findOne({ name: bucketName })
+
+    return bucket
+  }
+  /**
+   * 实例化 WXProxy
+   */
+  getWXProxyObj(wxConfig) {
+    return new WXProxy(wxConfig, this.mongoClient, TmsMesgLockPromise)
+  }
+  /**
+   * 
+   */
+  async _httpPost(cmd, posted, options = {}) {
+    let url = cmd
+    options.adapter = adapter
+
+    return axios.post(url, posted, options)
+      .then(rsp => rsp.data)
+      .catch(e => {
+        logger.error(e)
+        return Promise.resolve(false)
+      })
   }
 }
 

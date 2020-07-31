@@ -1,7 +1,7 @@
 const { ResultData, ResultFault, ResultObjectNotFound } = require('tms-koa')
 
-const BaseCtrl = require('../../base')
-const WxQrcodeModel = requireModel('wxQrcode')
+const BaseCtrl = require('../../../base')
+const WxQrcodeModel = requireModel('qrcode/wx')
 const ChannelModel = requireModel('channel')
 
 const { WXProxy } = require('tms-wxproxy')
@@ -20,7 +20,7 @@ class main extends BaseCtrl {
   async getSceneId(oneOff) {
     let scene_id
     if (oneOff) {
-      scene_id = Math.floor(Math.random() * (Number.MAX_SAFE_INTEGER - 100000 + 1)) + 100000
+      scene_id = Math.floor(Math.random() * (9999999999 - 100000 + 1)) + 100000
     } else {
       scene_id = Math.floor(Math.random() * (100000 - 1 + 1)) + 1
     }
@@ -48,9 +48,10 @@ class main extends BaseCtrl {
       oneOff = true
     else oneOff = false
 
-    // ----------------------------------
+    // ---------------临时------------------- 
     const { bucket } = this.request.query
     this.bucket = bucket
+    // ---------------临时-------------------
 
     // 将请求存入数据表
     let data = { channelCode, name }
@@ -63,7 +64,7 @@ class main extends BaseCtrl {
     } else {
       data.type = "QR_LIMIT_SCENE"
     }
-    const scene_id = await this.getSceneId()
+    const scene_id = await this.getSceneId(oneOff)
     data.scene_id = scene_id
 
     const chanModel = new ChannelModel(this)
@@ -90,7 +91,7 @@ class main extends BaseCtrl {
     return new ResultData(qrcode)
   }
   /**
-   * 模板列表
+   * 列表
    */
   async list() {
     let query = {}
