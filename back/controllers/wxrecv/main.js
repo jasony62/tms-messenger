@@ -25,7 +25,7 @@ class Main extends Base {
         const rstGet = await this.join(channelCode, data)
 
         this.ctx.set('Content-Type', 'text/html; charset=utf-8')
-        return rstGet[1]
+        return rstGet
       case 'POST':
         /* 公众平台事件 */
         const oData = await RawBody(this.ctx.req, { encoding: true }) // 获取原始数据
@@ -46,13 +46,13 @@ class Main extends Base {
    */
   async join(channelCode, data) {
     if (!data || !channelCode || !data.signature || !data.timestamp || !data.nonce || !data.echostr) {
-      return [false, 'wx proxy failed-0']
+      return 'wx proxy failed-0'
     }
 
     // 获取chennl配置
     const channModel = new ChannelModel(this)
     const chan = await channModel.byCode(channelCode)
-    if (!chan || chan.removeAt) return [false, 'wx proxy failed-0']
+    if (!chan || chan.removeAt) return 'wx proxy failed-0'
 
     let tmpArr = [chan.token, data.timestamp, data.nonce]
     tmpArr.sort()
@@ -70,9 +70,9 @@ class Main extends Base {
        */
       await cl.updateOne({ code: channelCode }, { $set: { joined: "Y" } })
 
-      return [true, data.echostr]
+      return data.echostr
     } else {
-      return [false, 'wx proxy failed-1']
+      return 'wx proxy failed-1'
     }
   }
   /**
