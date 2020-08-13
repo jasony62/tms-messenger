@@ -3,8 +3,6 @@ const { ResultData, ResultFault, ResultObjectNotFound } = require('tms-koa')
 const BaseCtrl = require('../../../base')
 const ChannelModel = requireModel('channel')
 
-const WXProxy = require('tms-wxproxy')
-
 /**
  * 微信模板消息模板
  */

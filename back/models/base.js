@@ -1,4 +1,5 @@
 const { nanoid } = require('nanoid')
+const { WXProxy } = require('tms-wxproxy')
 
 const DB_NAME = process.env.TMS_MESSENGER_MONGODB_DB
 
@@ -46,6 +47,12 @@ class Base {
   }
   get clWxRcev() {
     return this.db.collection('wx_rcev')
+  }
+  /**
+   * 实例化 WXProxy
+   */
+  getWXProxyObj(wxConfig) {
+    return new WXProxy(wxConfig, this.mongoClient, TmsMesgLockPromise)
   }
 }
 

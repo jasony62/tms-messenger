@@ -4,8 +4,6 @@ const BaseCtrl = require('../../../base')
 const WxQrcodeModel = requireModel('qrcode/wx')
 const ChannelModel = requireModel('channel')
 
-const { WXProxy } = require('tms-wxproxy')
-
 /**
  * 微信模板消息模板
  */
@@ -73,7 +71,7 @@ class main extends BaseCtrl {
 
     const { appid, appsecret, _id } = chan
     const wxConfig = { appid, appsecret, _id }
-    const wxproxy = new WXProxy(wxConfig, this.mongoClient, TmsMesgLockPromise)
+    const wxproxy = this.getWXProxyObj(wxConfig)
     let qrcode = await wxproxy.qrcodeCreate(scene_id, oneOff, expire)
 
     // 存储数据

@@ -1,5 +1,5 @@
 const { Ctrl, ResultFault, ResultObjectNotFound } = require('tms-koa')
-const { WXProxy } = require('tms-wxproxy')
+const modelBase = require('../models/base')
 
 const axios = require('axios')
 const adapter = require('axios/lib/adapters/http')
@@ -61,7 +61,8 @@ class Base extends Ctrl {
    * 实例化 WXProxy
    */
   getWXProxyObj(wxConfig) {
-    return new WXProxy(wxConfig, this.mongoClient, TmsMesgLockPromise)
+    const model = new modelBase(this)
+    return model.getWXProxyObj(wxConfig)
   }
   /**
    * 

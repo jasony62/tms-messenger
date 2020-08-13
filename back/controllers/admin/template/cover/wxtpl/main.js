@@ -7,8 +7,6 @@ const BaseCtrl = require('../../../../base')
 const CoverTplModel = requireModel('template/cover')
 const ChannelModel = requireModel('channel')
 
-const { WXProxy } = require('tms-wxproxy')
-
 /**
  * 微信模板消息模板
  */
@@ -32,7 +30,7 @@ class WxtplTemplate extends BaseCtrl {
 
     const { appid, appsecret, _id } = chan
     const wxConfig = { appid, appsecret, _id }
-    const wxproxy = new WXProxy(wxConfig, this.mongoClient, TmsMesgLockPromise)
+    const wxproxy = this.getWXProxyObj(wxConfig)
 
     const templates = await wxproxy.templateList()
 

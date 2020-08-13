@@ -5,6 +5,7 @@ const QUEUE_REDIS = process.env.TMS_MESSENGER_MESSAGE_REQUEST_QUEUE_REDIS
 const QUEUE_NAME = process.env.TMS_MESSENGER_MESSAGE_REQUEST_QUEUE_NAME
 const { MongoContext, RedisContext } = require('tms-koa/lib/app').Context
 
+const modelBase = requireModel('base')
 const MessageModel = requireModel('message')
 const RequestModel = requireModel('request')
 const ChannelModel = requireModel('channel')
@@ -17,8 +18,6 @@ const CoverTplModel = requireModel('template/cover')
  */
 async function sendByWx(request) {
   const mongoClient = await MongoContext.mongoClient()
-
-  const { WXProxy } = require('tms-wxproxy')
 
   const msgModel = new MessageModel({ mongoClient })
   const message = await msgModel.byCode(request.messageCode)
@@ -34,7 +33,8 @@ async function sendByWx(request) {
 
   const { appid, appsecret, _id } = chan
   const config = { appid, appsecret, _id }
-  const wxproxy = new WXProxy(config, mongoClient, TmsMesgLockPromise)
+  const model = new modelBase({ mongoClient })
+  const wxproxy = model.getWXProxyObj(config)
   const wxTplMsg = { touser: request.receiver, data: request.data, template_id: tpl.wxTemplateId }
   if (request.url) wxTplMsg.url = request.url
 
