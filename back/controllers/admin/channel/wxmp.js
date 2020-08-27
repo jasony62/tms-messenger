@@ -103,6 +103,20 @@ class WxmpCtrl extends BaseCtrl {
 
     return new ResultData(channels)
   }
+  /**
+   * 获取通道
+   */
+  async get() {
+    const { code } = this.request.query
+
+    return this
+      .model
+      .byCode(code)
+      .then(r => {
+        if (r) return new ResultData(r)
+        else return new ResultFault("未找到该通道")
+      })
+  }
 }
 
 module.exports = WxmpCtrl

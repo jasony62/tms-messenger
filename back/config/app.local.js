@@ -31,6 +31,9 @@ let appConfig = {
       ],
     },
   },
+  tmConfig: {
+    axios_proxy: process.env.TMS_APP_AXIOS_PROXY ? JSON.parse(process.env.TMS_APP_AXIOS_PROXY) : false // { "host": "127.0.0.1", "port": 9000, "auth": { "username": "admin", "password": "admin" } }
+  }
 }
 
 module.exports = appConfig
