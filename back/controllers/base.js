@@ -37,11 +37,12 @@ class Base extends Ctrl {
       const clBucket = client.db(BUCKET_DB).collection(BUCKET_COLLECTION)
       const bucket = await clBucket.findOne({ name: bucketName })
       if (!bucket) {
-        return new ResultObjectNotFound('指定的bucket不存在')
+        // return new ResultObjectNotFound('指定的bucket不存在')
+        return true
       }
       // 检查当前用户是否对bucket有权限
       // if (!allowAccessBucket(bucket, this.client.id)) {
-      //   // 检查是否做过授权
+      // 检查是否做过授权
       //   return new ResultObjectNotFound('没有访问指定bucket的权限')
       // }
       this.bucket = bucket.name
