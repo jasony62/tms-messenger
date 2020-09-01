@@ -1,5 +1,5 @@
 const { Ctrl, ResultFault, ResultObjectNotFound } = require('tms-koa')
-const modelBase = require('../models/base')
+const modelBase = requireModel('base')
 
 const axios = require('axios')
 const adapter = require('axios/lib/adapters/http')
@@ -7,6 +7,9 @@ const log4js = require('log4js')
 const logger = log4js.getLogger('tms-messenger-base')
 
 function allowAccessBucket(bucket, clientId) {
+
+  return true
+
   if (bucket.creator === clientId) return true
 
   const { coworkers } = bucket
@@ -29,7 +32,8 @@ class Base extends Ctrl {
     if (/yes|true/i.test(process.env.TMS_MSG_REQUIRE_BUCKET)) {
       const bucketName = this.request.query.bucket
       if (!bucketName) {
-        return new ResultFault('没有提供bucket参数')
+        // return new ResultFault('没有提供bucket参数')
+        return true
       }
       // 检查bucket是否存在
       const client = this.mongoClient
@@ -43,19 +47,11 @@ class Base extends Ctrl {
         // 检查是否做过授权
         return new ResultObjectNotFound('没有访问指定bucket的权限')
       }
-      this.bucket = bucket
-    }
-  }
-  /**
-   * 获取bucket详细信息
-   * @param {*} bucketName 
-   */
-  async getBucketInfo(bucketName) {
-    const client = this.mongoClient
-    const clBucket = client.db(BUCKET_DB).collection(BUCKET_COLLECTION)
-    const bucket = await clBucket.findOne({ name: bucketName })
+      this.bucket = bucket.name
+      this.bucketObj = bucket
 
-    return bucket
+      return true
+    }
   }
   /**
    * 实例化 WXProxy
@@ -70,6 +66,7 @@ class Base extends Ctrl {
   async _httpPost(cmd, posted, options = {}) {
     let url = cmd
     options.adapter = adapter
+    options.timeout = 10000
 
     return axios.post(url, posted, options)
       .then(rsp => rsp.data)

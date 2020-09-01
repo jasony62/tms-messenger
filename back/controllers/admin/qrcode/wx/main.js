@@ -1,8 +1,10 @@
 const { ResultData, ResultFault, ResultObjectNotFound } = require('tms-koa')
-
 const BaseCtrl = require('../../../base')
 const WxQrcodeModel = requireModel('qrcode/wx')
 const ChannelModel = requireModel('channel')
+
+const log4js = require('log4js')
+const logger = log4js.getLogger('tms-messenger-qrcode')
 
 /**
  * 微信模板消息模板
@@ -46,11 +48,7 @@ class main extends BaseCtrl {
       oneOff = true
     else oneOff = false
 
-    // ---------------临时------------------- 
-    const { bucket } = this.request.query
-    this.bucket = bucket
-    // ---------------临时-------------------
-
+    console.log(1111, "create")
     // 将请求存入数据表
     let data = { channelCode, name }
     if (this.bucket) data.bucket = this.bucket
@@ -67,12 +65,22 @@ class main extends BaseCtrl {
 
     const chanModel = new ChannelModel(this)
     const chan = await chanModel.byCode(channelCode)
+    console.log(222, chan)
     if (!chan || chan.removeAt) return new ResultFault('消息通道不存在或不可用')
 
     const { appid, appsecret, _id } = chan
     const wxConfig = { appid, appsecret, _id }
     const wxproxy = this.getWXProxyObj(wxConfig)
-    let qrcode = await wxproxy.qrcodeCreate(scene_id, oneOff, expire)
+    let qrcode = await wxproxy
+      .qrcodeCreate(scene_id, oneOff, expire)
+      .then(r => {
+        console.log(333, r)
+        return r
+      })
+      .catch(err => {
+        console.log(333444, err)
+        return Promise.reject(err)
+      })
 
     // 存储数据
     const CreateAt = this.qrcodeModel.now

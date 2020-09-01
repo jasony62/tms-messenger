@@ -1,12 +1,15 @@
 const Base = require('../base')
 const XmlParser = require('fast-xml-parser')
 const RawBody = require('raw-body')
+const crypto = require('crypto')
+
+const log4js = require('log4js')
+const logger = log4js.getLogger('tms-messenger-recv')
 
 const ChannelModel = requireModel('channel')
 const WxQrcodeModel = requireModel('qrcode/wx')
 const WxRecvModel = requireModel('wxRecv')
-
-const crypto = require('crypto')
+const BucketModel = requireModel('bucket')
 
 class Main extends Base {
   constructor(...args) {
@@ -30,8 +33,11 @@ class Main extends Base {
         /* 公众平台事件 */
         const oData = await RawBody(this.ctx.req, { encoding: true }) // 获取原始数据
         const dataPost = XmlParser.parse(oData) // 解析
+
+        logger.debug("接受微信事件", method, this.request.url, oData, dataPost)
         //
         const rstPost = await this.handle(channelCode, dataPost, oData)
+        logger.debug("响应微信事件", rstPost)
 
         return rstPost
     }
@@ -42,7 +48,6 @@ class Main extends Base {
    * 2. 将三个参数字符串拼接成一个字符串进行sha1加密
    * 3. 开发者获得加密后的字符串可与signature对比，标识该请求来源于易信
    *
-   * 若确认此次GET请求来自易信服务器，请原样返回echostr参数内容，则接入生效，否则接入失败。
    */
   async join(channelCode, data) {
     if (!data || !channelCode || !data.signature || !data.timestamp || !data.nonce || !data.echostr) {
@@ -88,9 +93,9 @@ class Main extends Base {
      * 记录消息日志
      */
     const wxRecvModel = new WxRecvModel(this)
-    // /**
-    //  * 消息已经收到，不处理
-    //  */
+    /**
+     * 消息已经收到，不处理
+     */
     // if ($modelLog->hasReceived($msg)) {
     //   die('');
     // }
@@ -112,7 +117,7 @@ class Main extends Base {
 
     if (!proxyUrl) proxyUrl = process.env.TMS_APP_WXRECV_DEFAULT_URL
     if (!proxyUrl) return false
-
+    console.log(111, proxyUrl)
     let options = {
       headers: { 'Content-Type': 'application/xml' },
     }
@@ -152,6 +157,14 @@ class Main extends Base {
     }
 
     return proxyUrl
+  }
+  /**
+   * 
+   */
+  async getBucketInfo(bucketName) {
+    const bkModel = new BucketModel(this)
+
+    return bkModel.byName(bucketName)
   }
 }
 
