@@ -69,13 +69,7 @@ class main extends BaseCtrl {
     const { appid, appsecret, _id } = chan
     const wxConfig = { appid, appsecret, _id }
     const wxproxy = this.getWXProxyObj(wxConfig)
-    let qrcode
-    try {
-      qrcode = await wxproxy.qrcodeCreate(scene_id, oneOff, expire)
-    } catch (error) {
-      console.log(444, error)
-      return new ResultFault("获取失败")
-    }
+    let qrcode = await wxproxy.qrcodeCreate(scene_id, oneOff, expire)
 
     // 存储数据
     const CreateAt = this.qrcodeModel.now
