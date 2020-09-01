@@ -75,7 +75,7 @@ class Base {
       if (oProxy.auth) proxy.auth = oProxy.auth
       axiosObj = axios.create({ proxy, timeout: 10000 })
     }
-    console.log("modelbase11111", axiosObj.defaults.proxy)
+
     return new WXProxy(wxConfig, this.mongoClient, TmsMesgLockPromise, axiosObj)
   }
 }

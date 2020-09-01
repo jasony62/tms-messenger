@@ -48,7 +48,6 @@ class main extends BaseCtrl {
       oneOff = true
     else oneOff = false
 
-    console.log(1111, "create")
     // 将请求存入数据表
     let data = { channelCode, name }
     if (this.bucket) data.bucket = this.bucket
@@ -65,22 +64,18 @@ class main extends BaseCtrl {
 
     const chanModel = new ChannelModel(this)
     const chan = await chanModel.byCode(channelCode)
-    console.log(222, chan)
     if (!chan || chan.removeAt) return new ResultFault('消息通道不存在或不可用')
 
     const { appid, appsecret, _id } = chan
     const wxConfig = { appid, appsecret, _id }
     const wxproxy = this.getWXProxyObj(wxConfig)
-    let qrcode = await wxproxy
-      .qrcodeCreate(scene_id, oneOff, expire)
-      .then(r => {
-        console.log(333, r)
-        return r
-      })
-      .catch(err => {
-        console.log(333444, err)
-        return Promise.reject(err)
-      })
+    let qrcode
+    try {
+      qrcode = await wxproxy.qrcodeCreate(scene_id, oneOff, expire)
+    } catch (error) {
+      console.log(444, error)
+      return new ResultFault("获取失败")
+    }
 
     // 存储数据
     const CreateAt = this.qrcodeModel.now

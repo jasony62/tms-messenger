@@ -117,7 +117,7 @@ class Main extends Base {
 
     if (!proxyUrl) proxyUrl = process.env.TMS_APP_WXRECV_DEFAULT_URL
     if (!proxyUrl) return false
-    console.log(111, proxyUrl)
+
     let options = {
       headers: { 'Content-Type': 'application/xml' },
     }

@@ -7,9 +7,6 @@ const log4js = require('log4js')
 const logger = log4js.getLogger('tms-messenger-base')
 
 function allowAccessBucket(bucket, clientId) {
-
-  return true
-
   if (bucket.creator === clientId) return true
 
   const { coworkers } = bucket
@@ -43,10 +40,10 @@ class Base extends Ctrl {
         return new ResultObjectNotFound('指定的bucket不存在')
       }
       // 检查当前用户是否对bucket有权限
-      if (!allowAccessBucket(bucket, this.client.id)) {
-        // 检查是否做过授权
-        return new ResultObjectNotFound('没有访问指定bucket的权限')
-      }
+      // if (!allowAccessBucket(bucket, this.client.id)) {
+      //   // 检查是否做过授权
+      //   return new ResultObjectNotFound('没有访问指定bucket的权限')
+      // }
       this.bucket = bucket.name
       this.bucketObj = bucket
 
