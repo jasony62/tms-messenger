@@ -1,19 +1,21 @@
-FROM node:alpine
+#基于alpine的nodejs基础镜像
+FROM node:12.10.0-alpine AS builder
+MAINTAINER made nodejs by p21 from lit29@chinatelecom.cn
+WORKDIR /usr/src/app
+#Install dependencied of nodejs on alpine
+RUN npm install -g cnpm --registry=https://registry.npm.taobao.org
+#Install node_modules
+COPY ./package.json ./
+RUN cnpm install --production
 
-# 设置时区
-RUN sed -i 's?http://dl-cdn.alpinelinux.org/?https://mirrors.aliyun.com/?' /etc/apk/repositories && \
-  apk add -U tzdata && \
-  cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
-  apk del tzdata
-
-RUN npm install cnpm -g
-
-WORKDIR /home/node/app
-
+#拉包
+FROM node:12.10.0-alpine
+WORKDIR /usr/src/app
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
+RUN apk update && apk add bash tzdata \
+  && cp -r -f /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+COPY --from=builder /usr/src/app/node_modules node_modules
+#copy code && config port  && start 
 COPY . .
-
-RUN cnpm i
-
-RUN chmod +x /home/node/app/wait_for.sh
-
-CMD [ "node", "server" ]
+EXPOSE 3000
+CMD [ "node", "./server.js" ]

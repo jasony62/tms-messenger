@@ -13,9 +13,9 @@ class Channel extends Base {
    * @param {string} code
    */
   async byCode(code) {
-    const chan = await this.clChannel.findOne({ code }, { $projection: { _id: 0 } })
-
-    return chan
+    return this
+      .clChannel
+      .findOne({ code }, { $projection: { _id: 0 } })
   }
 }
 

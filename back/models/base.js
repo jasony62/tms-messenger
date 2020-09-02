@@ -1,11 +1,19 @@
 const { nanoid } = require('nanoid')
+const { WXProxy } = require('tms-wxproxy')
 
-const DB_NAME = process.env.TMS_MESSENGER_MONGODB_DB
+const APPCONTEXT = require('tms-koa').Context.AppContext
+const TMCONFIG = APPCONTEXT.insSync().appConfig.tmConfig
+
+const DB_NAME = process.env.TMS_MESSENGER_MONGODB_DB || "tms_messenger"
+const BUCKET_DB = process.env.TMS_KOA_BUCKET_DB || "tms_messenger_bucket"
+
+const BUCKET_COLLECTION = process.env.TMS_KOA_BUCKET_COLLECTION || "bucket"
 
 class Base {
   constructor({ mongoClient, bucket }) {
     this.mongoClient = mongoClient
     this.bucket = bucket
+    this.tmConfig = TMCONFIG
   }
   /**
    * 返回当前时间
@@ -22,6 +30,9 @@ class Base {
   }
   get db() {
     return this.mongoClient.db(DB_NAME)
+  }
+  get bucketDb() {
+    return this.mongoClient.db(BUCKET_DB)
   }
   get clChannel() {
     return this.db.collection('channel')
@@ -43,6 +54,29 @@ class Base {
   }
   get clWxQrcode() {
     return this.db.collection('wx_qrcode')
+  }
+  get clWxRcev() {
+    return this.db.collection('wx_rcev')
+  }
+  get clBucket() {
+    return this.bucketDb.collection(BUCKET_COLLECTION)
+  }
+  /**
+   * 实例化 WXProxy
+   */
+  getWXProxyObj(wxConfig) {
+    let axiosObj = null
+    if (this.tmConfig.axios_proxy) {
+      const axios = require('tms-wxproxy/node_modules/axios-https-proxy-fix')
+      const oProxy = this.tmConfig.axios_proxy
+      let proxy = {}
+      proxy.host = oProxy.host
+      proxy.port = oProxy.port
+      if (oProxy.auth) proxy.auth = oProxy.auth
+      axiosObj = axios.create({ proxy, timeout: 10000 })
+    }
+
+    return new WXProxy(wxConfig, this.mongoClient, TmsMesgLockPromise, axiosObj)
   }
 }
 

@@ -1,10 +1,10 @@
 const { ResultData, ResultFault, ResultObjectNotFound } = require('tms-koa')
-
-const BaseCtrl = require('../../base')
-const WxQrcodeModel = requireModel('wxQrcode')
+const BaseCtrl = require('../../../base')
+const WxQrcodeModel = requireModel('qrcode/wx')
 const ChannelModel = requireModel('channel')
 
-const { WXProxy } = require('tms-wxproxy')
+const log4js = require('log4js')
+const logger = log4js.getLogger('tms-messenger-qrcode')
 
 /**
  * 微信模板消息模板
@@ -20,7 +20,7 @@ class main extends BaseCtrl {
   async getSceneId(oneOff) {
     let scene_id
     if (oneOff) {
-      scene_id = Math.floor(Math.random() * (Number.MAX_SAFE_INTEGER - 100000 + 1)) + 100000
+      scene_id = Math.floor(Math.random() * (9999999999 - 100000 + 1)) + 100000
     } else {
       scene_id = Math.floor(Math.random() * (100000 - 1 + 1)) + 1
     }
@@ -48,10 +48,6 @@ class main extends BaseCtrl {
       oneOff = true
     else oneOff = false
 
-    // ----------------------------------
-    const { bucket } = this.request.query
-    this.bucket = bucket
-
     // 将请求存入数据表
     let data = { channelCode, name }
     if (this.bucket) data.bucket = this.bucket
@@ -63,7 +59,7 @@ class main extends BaseCtrl {
     } else {
       data.type = "QR_LIMIT_SCENE"
     }
-    const scene_id = await this.getSceneId()
+    const scene_id = await this.getSceneId(oneOff)
     data.scene_id = scene_id
 
     const chanModel = new ChannelModel(this)
@@ -72,7 +68,7 @@ class main extends BaseCtrl {
 
     const { appid, appsecret, _id } = chan
     const wxConfig = { appid, appsecret, _id }
-    const wxproxy = new WXProxy(wxConfig, this.mongoClient, TmsMesgLockPromise)
+    const wxproxy = this.getWXProxyObj(wxConfig)
     let qrcode = await wxproxy.qrcodeCreate(scene_id, oneOff, expire)
 
     // 存储数据
@@ -90,7 +86,7 @@ class main extends BaseCtrl {
     return new ResultData(qrcode)
   }
   /**
-   * 模板列表
+   * 列表
    */
   async list() {
     let query = {}

@@ -1,7 +1,7 @@
 /**
  * 消息封面模板
  */
-const Base = require('./base')
+const Base = require('../base')
 
 class WxQrcode extends Base {
   constructor(...args) {
